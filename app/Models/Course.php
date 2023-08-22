@@ -35,10 +35,15 @@ class Course extends Model
     //     return $this->belongsTo(Currency::class,'currency_id');
     // }
 
-     public function courseSummary()
-     {
-         return $this->hasMany(CourseSummary::class);
-     }
+    public function sections()
+    {
+        return $this->hasMany(Section::class);
+    }
+
+    public function courseSummary()
+    {
+        return $this->hasMany(CourseSummary::class);
+    }
 
     public function ages()
     {

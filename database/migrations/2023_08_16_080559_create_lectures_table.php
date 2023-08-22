@@ -13,10 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('sections', function (Blueprint $table) {
+        Schema::create('lectures', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->foreignId('course_id');
+            $table->text('description');
+            $table->string('file')->default('file');
+            $table->string('video')->default('video');
+            $table->string('link');
+            $table->foreignId('section_id');
             $table->timestamps();
         });
     }
@@ -28,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sections');
+        Schema::dropIfExists('lectures');
     }
 };

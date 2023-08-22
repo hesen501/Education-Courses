@@ -34,12 +34,11 @@
                     </div>
                     @endif
                         <div  style="@if(session()->get('step')!=1) display: none @endif">
-                        <form id="form1" action="{{route('admin.courses.editStepOne',$course->id)}}" method="POST" class="form-horizontal form-material" style="@if(session()->get('step')==1) display:block @else display:none @endif">
+                        <form id="form1" action="{{route('admin.courses.editStepOne',$course->id)}}" method="POST" enctype="multipart/form-data" class="form-horizontal form-material" style="@if(session()->get('step')==1) display:block @else display:none @endif">
                             @csrf
                             @method('PATCH')
                             <div class="form-group mb-4">
                                 <label class="col-md-12 p-0">Name</label>
-                                <p>Current Step: {{ session('step') }}</p>
                                 <div class="col-md-12 border-bottom p-2">
                                     <input type="text" name="name" placeholder="" value="{{$course->name}}"
                                         class="form-control p-0 border-2">
@@ -114,7 +113,7 @@
                         </form>
                         </div>
                         <div  style="@if(session()->get('step')==2) display: block @else display: none @endif">
-                            <form id="form2" action="{{route('admin.courses.editStepTwo',$course->id)}}" method="POST" class="form-horizontal form-material">
+                            <form id="form2" action="{{route('admin.courses.editStepTwo',$course->id)}}" enctype="multipart/form-data" method="POST" class="form-horizontal form-material">
                             @csrf
                             @method('PATCH')
                             <div class="form-group mb-4" id="summary">
@@ -169,15 +168,44 @@
                         </form>
                         </div>
                         <div  style="@if(session()->get('step')==3) display: block @else display: none @endif">
-                        <form id="form3" action="{{route('admin.courses.editStepThree',$course->id)}}" method="POST" class="form-horizontal form-material" style="@if(session()->get('step')==3) display: block @else display: none @endif">
+                        <form id="form3" action="{{route('admin.courses.editStepThree',$course->id)}}" method="POST" enctype="multipart/form-data" class="form-horizontal form-material" style="@if(session()->get('step')==3) display: block @else display: none @endif">
                             @csrf
                             @method('PATCH')
-                            <div class="form-group mb-4">
-                                <label class="col-md-12 p-0">Name</label>
-                                <div class="col-md-12 border-bottom p-2">
-                                    <input type="text" name="name" placeholder=""
-                                        class="form-control p-0 border-2">
+                            <div id="sections">
+                                @foreach ($sections as $section)
+                                <div class="form-group mb-4">
+                                    <div class="col-md-12 border-bottom p-2">
+                                        <h1 class="col-md-12 p-0" >Section</h1>
+                                        <input type="text" name="section_names[]" value="{{$section->name}}" placeholder="section name" >
+                                        <div class="row">
+                                            <div class="col-11">
+                                                <h2 class="col-md-12 p-0">Lecture</h2>
+                                            </div>
+                                            <div class="col-1">
+                                                <button type="button" id="delete_section" class="btn btn-danger">Delete</button>
+                                            </div>
+                                        </div>
+                                        <label for="">Lecture Name</label> 
+                                        <input type="text" value="{{$section->lecture->name}}" name="lecture_names[]" placeholder="name"
+                                            class="form-control p-0 border-2">
+                                        <label for="">Lecture Description</label> 
+                                        <textarea name="lecture_descriptions[]"
+                                            class="form-control p-0 border-2">{{$section->lecture->description}}</textarea>
+                                        <label for="">Lecture Link</label>
+                                        <input type="text" value="{{$section->lecture->link}}" name="lecture_links[]" placeholder="link"
+                                            class="form-control p-0 border-2">
+                                        <label for="">Lecture File</label>
+                                        <input type="file" name="lecture_files[]" placeholder=""
+                                            class="form-control p-0 border-2">
+                                        <label for="">Lecture Video</label>
+                                        <input type="file" name="lecture_videos[]" placeholder=""
+                                            class="form-control p-0 border-2">
+                                        <div>
+                                        </div>
+                                    </div>
+                                    <button type="button" id="add_section" class="btn btn-success" style="width: 1215px">Add Section</button>
                                 </div>
+                                @endforeach
                             </div>
                             <div class="col-sm-12">
                                 <button type="submit" class="btn btn-success " name="button" value="4">Next Step</button>
@@ -188,13 +216,13 @@
                         </form>
                         </div>
                         <div  style="@if(session()->get('step')==4) display: block @else display: none @endif">
-                        <form id="form4" action="{{route('admin.courses.editStepFour',$course->id)}}" method="POST" class="form-horizontal form-material" style=" @if(session()->get('step')==4) display: block @else display: none @endif">
+                        <form id="form4" action="{{route('admin.courses.editStepFour',$course->id)}}" method="POST" enctype="multipart/form-data" class="form-horizontal form-material" style=" @if(session()->get('step')==4) display: block @else display: none @endif">
                             @csrf
                             @method('PATCH')
                             <div class="form-group mb-4">
                                 <label class="col-md-12 p-0">Image</label>
                                 <div class="col-md-12 border-bottom p-2">
-                                    <img src="{{asset($course->image)}}" alt="">
+                                    <img src="{{asset('storage/'.$course->image)}}"  height="200px">
                                     <input type="file" name="image" placeholder=""
                                         class="form-control p-0 border-2">
                                 </div>
@@ -202,7 +230,7 @@
                             <div class="form-group mb-4">
                                 <label class="col-md-12 p-0">Background Image</label>
                                 <div class="col-md-12 border-bottom p-2">
-                                    <img src="{{asset($course->image)}}" alt="">
+                                    <img src="{{asset('storage/'.$course->background_image)}}"  height="200px">
                                     <input type="file" name="background_image" placeholder=""
                                         class="form-control p-0 border-2">
                                 </div>
@@ -211,37 +239,36 @@
                                 <label class="col-md-12 p-0">Certificate test</label>
                                 <div class="col-md-12 border-bottom p-2">
                                     <label for="yes"  style="color: rgb(43, 218, 43)">Yes</label>
-                                    <input type="radio" name="certificate_status" value='1' id="yes" >
+                                    <input type="radio" name="certificate_status" value='1' @if($course->certificate_status==1) checked @endif >
                                     <label for="no" style="color: red">No</label>
-                                    <input type="radio" name="certificate_status" value='0' value="no" >
+                                    <input type="radio" name="certificate_status" value='0'  @if($course->certificate_status==0) checked @endif >
                                 </div>
                             </div>
                             <div class="form-group mb-4">
                                 <label class="col-md-12 p-0">Time Limit</label>
                                 <div class="col-md-12 border-bottom p-2">
                                     <label for="yes"  style="color: rgb(43, 218, 43)">Yes</label>
-                                    <input type="radio" name="time_limit_status" value='1' id="yes" >
+                                    <input type="radio" name="time_limit_status" value='1' @if($course->time_limit_status==1) checked @endif  >
                                     <label for="no" style="color: red">No</label>
-                                    <input type="radio" name="time_limit_status" value='0' value="no" >
+                                    <input type="radio" name="time_limit_status" value='0' @if($course->time_limit_status==0) checked @endif >
                                 </div>
                             </div>
                             <div class="form-group mb-4">
                                 <label class="col-md-12 p-0">Final Exam</label>
                                 <div class="col-md-12 border-bottom p-2">
                                     <label for="yes"  style="color: rgb(43, 218, 43)">Yes</label>
-                                    <input type="radio" name="quiz_status" value='1' id="yes" >
+                                    <input type="radio" name="quiz_status" value='1'  @if($course->quiz_status==1) checked @endif >
                                     <label for="no" style="color: red">No</label>
-                                    <input type="radio" name="quiz_status" value='0' value="no" >
+                                    <input type="radio" name="quiz_status" value='0'  @if($course->quiz_status==0) checked @endif >
                                 </div>
                             </div>
                             <div class="form-group mb-4">
                                 <label class="col-md-12 p-0">Min required points to pass</label>
                                 <div class="col-md-1 border-bottom p-2">
-                                    <input type="number" name="min_point" placeholder=""
+                                    <input type="number" name="min_point" placeholder="" value="{{$course->min_point}}"
                                         class="form-control p-0 border-2">
                                 </div>
                             </div>
-
                             <div class="col-sm-12">
                                 <button type="submit" class="btn btn-success step3" value="3" name="button">Back</button>
                             </div>
@@ -262,6 +289,36 @@
         $(document).ready(function () {
         $('select').selectize({
             sortField: 'text'
+        });
+        $(document).on('click', '#add_section', function (e) {
+            var text =
+            '<div class="form-group mb-4" id="section">'
+            +'<div class="col-md-12 border-bottom p-2">'
+            + '<h1 class="col-md-12 p-0">Section</h1>'
+            +'<input type="text" name="section_names[]" placeholder="section name" >'
+                +'<div class="row">'
+                +'<div class="col-11">'
+                  +'  <h2 class="col-md-12 p-0">Lecture</h2>'
+                +'</div>'
+               +' <div class="col-1">'
+                  +'  <button type="button" id="delete_section" class="btn btn-danger">Delete</button>'
+               +' </div>'
+                +'</div>'
+               +' <label for="">Lecture Name</label> '
+              +'  <input type="text" name="lecture_names[]" placeholder="name"'
+              +'  class="form-control p-0 border-2">'
+            +'    <label for="">Lecture Description</label> '
+            +'    <textarea type="text" name="lecture_descriptions[]"class="form-control p-0 border-2"></textarea>'
+            +'    <label for="">Lecture Link</label>'
+            +'    <input type="text" name="lecture_links[]" placeholder="link" class="form-control p-0 border-2">'
+            +'    <label for="">Lecture File</label>'
+            +'    <input type="file" name="lecture_files[]" placeholder="" class="form-control p-0 border-2">'
+            +'    <label for="">Lecture Video</label>'
+            +'    <input type="file" name="lecture_videos[]" placeholder="" class="form-control p-0 border-2">'
+            +'<button type="button" id="add_section" class="btn btn-success" style="width: 1215px">Add Section</button>'
+            +'</div>'
+            +'</div>'
+            $('#sections').append(text)
         });
         $("#create").click(function(){
             var text =
@@ -284,6 +341,11 @@
                 e.target.parentElement.parentElement.parentElement.remove()
             }
             e.target.parentElement.parentElement.remove()
+        })
+    </script>
+    <script>
+        $(document).on('click', '#delete_section', function (e) {
+            e.target.parentElement.parentElement.parentElement.remove()
         })
     </script>
 @endpush
