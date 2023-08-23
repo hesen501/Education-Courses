@@ -172,40 +172,47 @@
                             @csrf
                             @method('PATCH')
                             <div id="sections">
+                                @if (!empty($sections))
                                 @foreach ($sections as $section)
                                 <div class="form-group mb-4">
                                     <div class="col-md-12 border-bottom p-2">
                                         <h1 class="col-md-12 p-0" >Section</h1>
                                         <input type="text" name="section_names[]" value="{{$section->name}}" placeholder="section name" >
-                                        <div class="row">
-                                            <div class="col-11">
-                                                <h2 class="col-md-12 p-0">Lecture</h2>
-                                            </div>
-                                            <div class="col-1">
-                                                <button type="button" id="delete_section" class="btn btn-danger">Delete</button>
-                                            </div>
-                                        </div>
-                                        <label for="">Lecture Name</label> 
-                                        <input type="text" value="{{$section->lecture->name}}" name="lecture_names[]" placeholder="name"
-                                            class="form-control p-0 border-2">
-                                        <label for="">Lecture Description</label> 
-                                        <textarea name="lecture_descriptions[]"
-                                            class="form-control p-0 border-2">{{$section->lecture->description}}</textarea>
-                                        <label for="">Lecture Link</label>
-                                        <input type="text" value="{{$section->lecture->link}}" name="lecture_links[]" placeholder="link"
-                                            class="form-control p-0 border-2">
-                                        <label for="">Lecture File</label>
-                                        <input type="file" name="lecture_files[]" placeholder=""
-                                            class="form-control p-0 border-2">
-                                        <label for="">Lecture Video</label>
-                                        <input type="file" name="lecture_videos[]" placeholder=""
-                                            class="form-control p-0 border-2">
-                                        <div>
+                                        <div id="lectures">
+                                            <div class="row lecture">
+                                                <div class="col-10">
+                                                    <h2 class="col-md-12">Lecture</h2>
+                                                    <button type="button" class="add-lecture btn btn-success" >Add lecture</button>
+                                                </div>
+                                                <div class="col-2">
+                                                    <button type="button" id="delete_section" class="btn btn-danger">Delete Section</button>
+                                                </div>
+                                                </div>
+                                                <label for="">Lecture Name</label> 
+                                                <input type="text" value="{{$section->lecture->name}}" name="lecture_names[]" placeholder="name"
+                                                    class="form-control p-0 border-2">
+                                                <label for="">Lecture Description</label> 
+                                                <textarea name="lecture_descriptions[]"
+                                                    class="form-control p-0 border-2">{{$section->lecture->description}}</textarea>
+                                                <label for="">Lecture Link</label>
+                                                <input type="text" value="{{$section->lecture->link}}" name="lecture_links[]" placeholder="link"
+                                                    class="form-control p-0 border-2">
+                                                <label for="">Lecture File</label>
+                                                <input type="file" name="lecture_files[]" placeholder=""
+                                                    class="form-control p-0 border-2">
+                                                <label for="">Lecture Video</label>
+                                                <input type="file" name="lecture_videos[]" placeholder=""
+                                                    class="form-control p-0 border-2">
+                                                <input type="hidden" name="section_ids[]=" >
+                                            <div>
                                         </div>
                                     </div>
-                                    <button type="button" id="add_section" class="btn btn-success" style="width: 1215px">Add Section</button>
                                 </div>
                                 @endforeach
+                                @else
+                                    @include('admin.widgets.section')
+                                @endif
+                                <button type="button" id="add_section" class="btn btn-success" style="width: 1215px">Add Section</button>
                             </div>
                             <div class="col-sm-12">
                                 <button type="submit" class="btn btn-success " name="button" value="4">Next Step</button>
@@ -296,13 +303,13 @@
             +'<div class="col-md-12 border-bottom p-2">'
             + '<h1 class="col-md-12 p-0">Section</h1>'
             +'<input type="text" name="section_names[]" placeholder="section name" >'
-                +'<div class="row">'
-                +'<div class="col-11">'
+                +'<div class="row lecture">'
+                    +'<div class="col-10">'
                   +'  <h2 class="col-md-12 p-0">Lecture</h2>'
+                    +'<button type="button" class="add-lecture btn btn-success" >Add lecture</button>'
                 +'</div>'
-               +' <div class="col-1">'
-                  +'  <button type="button" id="delete_section" class="btn btn-danger">Delete</button>'
-               +' </div>'
+                +'<div class="col-2">'
+                   +' <button type="button" id="delete_section" class="btn btn-danger">Delete Section</button>'
                 +'</div>'
                +' <label for="">Lecture Name</label> '
               +'  <input type="text" name="lecture_names[]" placeholder="name"'
@@ -316,6 +323,7 @@
             +'    <label for="">Lecture Video</label>'
             +'    <input type="file" name="lecture_videos[]" placeholder="" class="form-control p-0 border-2">'
             +'<button type="button" id="add_section" class="btn btn-success" style="width: 1215px">Add Section</button>'
+                +'</div>'
             +'</div>'
             +'</div>'
             $('#sections').append(text)
@@ -346,6 +354,9 @@
     <script>
         $(document).on('click', '#delete_section', function (e) {
             e.target.parentElement.parentElement.parentElement.remove()
+        })
+        $(document).on('click', '#delete_lecture', function (e) {
+            e.target.parentElement.parentElement.remove()
         })
     </script>
 @endpush

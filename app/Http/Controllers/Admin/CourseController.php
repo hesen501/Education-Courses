@@ -79,9 +79,9 @@ class CourseController extends Controller
         $age_ids = $course->ages->pluck('id')->toArray();
         $course_summaries = CourseSummary::where('course_id',$course->id)->get();
         $sections = Section::where('course_id',$course->id)->with('lecture')->get();
-        if(!session()->has('step')){
-            session()->put('step', 1);
-        }
+        // $sections = empty($sections) ? ['name'=>'section ' ]: $sections ;
+        
+        if(!session()->has('step')){session()->put('step', 1);}
         return view('admin.pages.courses.edit',compact('course','categories','languages',
         'currencies','ages','category_ids','age_ids','course_summaries','sections'));
     }
@@ -108,6 +108,7 @@ class CourseController extends Controller
         $this->insertArray($request->age_ids, $course->id,'age_id',CourseAge::class);
         CourseCategory::where('course_id',$course->id)->delete();
         $this->insertArray($request->category_ids, $course->id,'category_id',CourseCategory::class);
+
         session()->put('step', $request->button);
         return back();
     }
@@ -130,6 +131,7 @@ class CourseController extends Controller
             'target_student'=>$request->target_student,
             'permalink'=>$request->permalink,
         ]);
+        
         session()->put('step', $request->button);
         return back();
     }
@@ -138,16 +140,22 @@ class CourseController extends Controller
         $course = Course::query()->with('sections')->findOrFail($id); 
         Section::where('course_id',$course->id)->delete();
         $this->insertArray($request->section_names,$course->id,'name',Section::class);
-        $section_ids =  Section::where('course_id',$course->id)->pluck('id');
-        for($i=0;$i < count($request->lecture_names);$i++){
-            $lectures[] = [
-                'name'=>$request->lecture_names[$i],
-                'description'=>$request->lecture_descriptions[$i],
-                'link'=>$request->lecture_links[$i],
-                'section_id'=>$section_ids[$i],
-            ];
-        }
-        Lecture::insert($lectures);
+        // $section_ids =  Section::where('course_id',$course->id)->pluck('id');
+        // for($i=0;$i < count($request->lecture_names);$i++){
+        //     $lectures[] = [
+        //         'name'=>$request->lecture_names[$i],
+        //         'description'=>$request->lecture_descriptions[$i],
+        //         'link'=>$request->lecture_links[$i],
+        //         'section_id'=>$request->section_ids[$i],
+        //     ];
+        // }
+        // // foreach($request_data as $data){
+        // //     $datas[] = ['course_id'=>$course_id, $column => $data];
+        // // }
+        // // $model::insert($datas);
+        // // $this->insertArray($request->category_ids, $course->id,'category_id',Lecture::class);
+        // Lecture::insert($lectures);
+        
         session()->put('step', $request->button);
         return back();
     }

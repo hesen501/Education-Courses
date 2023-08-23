@@ -22,7 +22,6 @@
 <!--Wave Effects -->
 <script src="{{asset('adminn/js/waves.js')}}"></script>
 <!--Menu sidebar -->
-<script src="{{('adminn/js/sidebarmenu.js')}}"></script>
 <!--Custom JavaScript -->
 <script src="{{asset('adminn/js/custom.js')}}"></script>
 <!--This page JavaScript -->
