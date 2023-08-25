@@ -47,11 +47,11 @@ class Course extends Model
 
     public function ages()
     {
-        return $this->belongsToMany(Age::class,CourseAge::class);
+        return $this->belongsToMany(Age::class, CourseAge::class);
     }
 
     public function categories()
     {
-        return $this->belongsToMany(Category::class,CourseCategory::class);
+        return $this->belongsToMany(Category::class, CourseCategory::class);
     }
 }

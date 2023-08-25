@@ -29,6 +29,15 @@
 <script src="{{asset('adminn/plugins/bower_components/chartist/dist/chartist.min.js')}}"></script>
 <script src="{{asset('adminn/plugins/bower_components/chartist-plugin-tooltips/dist/chartist-plugin-tooltip.min.js')}}"></script>
 <script src="{{asset('adminn/js/pages/dashboards/dashboard1.js')}}"></script>
+<script>
+    var elems = document.getElementsByClassName('confirmationDelete');
+    var confirmIt = function (e) {
+        if (!confirm('Silməyə əminsiz?')) e.preventDefault();
+    };
+    for (var i = 0, l = elems.length; i < l; i++) {
+        elems[i].addEventListener('click', confirmIt, false);
+    }
+</script>
 @stack('js')
 </body>
 

@@ -19,6 +19,6 @@ class Lecture extends Model
 
     public function course()
     {
-        return $this->belongsTo(Section::class,'section_id');
+        return $this->belongsTo(Section::class, 'section_id');
     }
 }

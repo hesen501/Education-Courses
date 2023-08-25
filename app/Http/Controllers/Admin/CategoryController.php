@@ -13,16 +13,19 @@ class CategoryController extends Controller
     public function index()
     {
         $categories = Category::query()
-        ->select('id','name','category_id')
-        ->with('children')
-        ->get();
+            ->select('id','name','category_id')
+            ->with('children')
+            ->get();
+            
         return view('admin.pages.categories.index',compact('categories'));
     }
 
     public function create()
     {
         $categories = Category::query()
-        ->select('id','name','category_id')->get();
+            ->select('id','name','category_id')
+            ->get();
+        
         return view('admin.pages.categories.create',compact('categories'));
     }
 
@@ -32,14 +35,15 @@ class CategoryController extends Controller
             'name'=>$request->name,
             'category_id'=>$request->category_id,
         ]);
+        
         return back()->with('success','Category created successfully');
     }
 
     public function show($id)
     {
         $category = Category::query()
-        ->with('children')
-        ->findOrFail($id);
+            ->with('children')
+            ->findOrFail($id);
 
         return view('admin.pages.categories.show',compact('category'));
     }
@@ -47,7 +51,10 @@ class CategoryController extends Controller
     public function edit($id)
     {
         $category = Category::query()->findOrFail($id);
-        $categories = Category::query()->where('id','!=',$category->id)->get();
+        $categories = Category::query()
+            ->where('id','!=',$category->id)
+            
+            ->get();
         return view('admin.pages.categories.edit',compact('category','categories'));
     }
 
@@ -60,14 +67,14 @@ class CategoryController extends Controller
             'category_id'=>$category_id,
         ]);
 
-        return back()->with('success','Category updated successfully');
+        return back()->with('success', 'Category updated successfully');
     }
 
     public function destroy($id)
     {
         Category::destroy($id);
-        Category::query()->where('category_id',$id)->delete();
-        return back()->with('success','Category deleted successfully');
+        Category::query()->where('category_id', $id)->delete();
+        return back()->with('success', 'Category deleted successfully');
     }
 }
 

@@ -14,6 +14,6 @@ class Age extends Model
 
     public function courses()
     {
-        return $this->belongsToMany(Course::class,CourseAge::class);
+        return $this->belongsToMany(Course::class, CourseAge::class);
     }
 }

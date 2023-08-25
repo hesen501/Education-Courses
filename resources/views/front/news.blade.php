@@ -23,13 +23,13 @@
                                 </div>  
                             </div>
                             <div class="card-body ">
-                                <h5 class="card-title mb-2">{{$item->title}}</h5> 
-                                <small class="small text-muted">{{$item->created_at}}
+                                <h5 class="card-title mb-2">{{ $item->title }}</h5> 
+                                <small class="small text-muted">{{ $item->created_at }}
                                 </small>
                                 <p class="my-2"></p>
                             </div>
                             <div class="card-footer p-0 text-center">
-                                <a href="{{route('front.news.single',$item->id)}}" class="btn btn-outline-dark btn-sm">Ətraflı</a>
+                                <a href="{{route('front.news.single', $item->id)}}" class="btn btn-outline-dark btn-sm">Ətraflı</a>
                             </div>   
                         </div>
                     </div>

@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CurrencyController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\LanguageController;
+use App\Http\Controllers\Admin\SectionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,6 +28,12 @@ Route::group(['middleware'=>'notLogin'],function() {
     Route::patch('/courses/{id}/edit-2',[CourseController::class, 'editStepTwo'])->name('courses.editStepTwo');
     Route::patch('/courses/{id}/edit-3',[CourseController::class, 'editStepThree'])->name('courses.editStepThree');
     Route::patch('/courses/{id}/edit-4',[CourseController::class, 'editStepFour'])->name('courses.editStepFour');
+
+    Route::get('/courses/{id}/create-section',[SectionController::class, 'create'])->name('sections.create');
+    Route::post('/courses/section/store',[SectionController::class, 'store'])->name('sections.store');
+    Route::get('/courses/section/{id}/edit',[SectionController::class, 'edit'])->name('sections.edit');
+    Route::patch('/courses/section/{id}',[SectionController::class, 'update'])->name('sections.update');
+    Route::get('/courses/section/{id}/delete',[SectionController::class, 'destroy'])->name('sections.destroy');
 
     Route::resources([
         'courses'=> CourseController::class,

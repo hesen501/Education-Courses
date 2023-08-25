@@ -18,9 +18,11 @@ class AuthController extends Controller
             "name" => $req->name , 
             "password" => $req->password
         ]);
+        
         if(!$auth) {
             return redirect()->back()->with('danger','name or password incorrect');
         }
+
         return redirect()->route('admin.dashboard');  
     }
     

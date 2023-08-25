@@ -171,49 +171,34 @@
                         <form id="form3" action="{{route('admin.courses.editStepThree',$course->id)}}" method="POST" enctype="multipart/form-data" class="form-horizontal form-material" style="@if(session()->get('step')==3) display: block @else display: none @endif">
                             @csrf
                             @method('PATCH')
-                            <div id="sections">
-                                @if (!empty($sections))
-                                @foreach ($sections as $section)
-                                <div class="form-group mb-4">
-                                    <div class="col-md-12 border-bottom p-2">
-                                        <h1 class="col-md-12 p-0" >Section</h1>
-                                        <input type="text" name="section_names[]" value="{{$section->name}}" placeholder="section name" >
-                                        <div id="lectures">
-                                            <div class="row lecture">
-                                                <div class="col-10">
-                                                    <h2 class="col-md-12">Lecture</h2>
-                                                    <button type="button" class="add-lecture btn btn-success" >Add lecture</button>
-                                                </div>
-                                                <div class="col-2">
-                                                    <button type="button" id="delete_section" class="btn btn-danger">Delete Section</button>
-                                                </div>
-                                                </div>
-                                                <label for="">Lecture Name</label> 
-                                                <input type="text" value="{{$section->lecture->name}}" name="lecture_names[]" placeholder="name"
-                                                    class="form-control p-0 border-2">
-                                                <label for="">Lecture Description</label> 
-                                                <textarea name="lecture_descriptions[]"
-                                                    class="form-control p-0 border-2">{{$section->lecture->description}}</textarea>
-                                                <label for="">Lecture Link</label>
-                                                <input type="text" value="{{$section->lecture->link}}" name="lecture_links[]" placeholder="link"
-                                                    class="form-control p-0 border-2">
-                                                <label for="">Lecture File</label>
-                                                <input type="file" name="lecture_files[]" placeholder=""
-                                                    class="form-control p-0 border-2">
-                                                <label for="">Lecture Video</label>
-                                                <input type="file" name="lecture_videos[]" placeholder=""
-                                                    class="form-control p-0 border-2">
-                                                <input type="hidden" name="section_ids[]=" >
-                                            <div>
-                                        </div>
-                                    </div>
-                                </div>
-                                @endforeach
-                                @else
-                                    @include('admin.widgets.section')
-                                @endif
-                                <button type="button" id="add_section" class="btn btn-success" style="width: 1215px">Add Section</button>
-                            </div>
+                            <table class="table text-nowrap">
+                                <a href="{{route('admin.sections.create',$course->id)}}" class="btn btn-primary" >Add Section</a>
+                                <thead>
+                                    <tr>
+                                        <th class="border-top-0">Name</th>
+                                        <th class="border-top-0">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($sections as $section)
+                                    <tr>
+                                        <td>{{$section->name}}</td>
+                                        <td>
+                                            <a href="{{route('admin.sections.edit',$section->id)}}" class="btn btn-primary">
+                                                Edit
+                                            </a>
+                                            {{-- <a href="{{route('admin.sections.show',$section->id)}}" class="btn btn-warning" style="color: black">
+                                                Show
+                                            </a> --}}
+                                            <a href="{{ route('admin.sections.destroy', $section->id) }}" class="btn btn-danger confirmationDelete" >Delete</a>
+                                            <!-- Create a hidden form that will be submitted when the link is clicked -->
+                                           
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                            <br>
                             <div class="col-sm-12">
                                 <button type="submit" class="btn btn-success " name="button" value="4">Next Step</button>
                             </div>
@@ -223,13 +208,13 @@
                         </form>
                         </div>
                         <div  style="@if(session()->get('step')==4) display: block @else display: none @endif">
-                        <form id="form4" action="{{route('admin.courses.editStepFour',$course->id)}}" method="POST" enctype="multipart/form-data" class="form-horizontal form-material" style=" @if(session()->get('step')==4) display: block @else display: none @endif">
+                        <form id="form4" action="{{route('admin.courses.editStepFour', $course->id)}}" method="POST" enctype="multipart/form-data" class="form-horizontal form-material" style=" @if(session()->get('step')==4) display: block @else display: none @endif">
                             @csrf
                             @method('PATCH')
                             <div class="form-group mb-4">
                                 <label class="col-md-12 p-0">Image</label>
                                 <div class="col-md-12 border-bottom p-2">
-                                    <img src="{{asset('storage/'.$course->image)}}"  height="200px">
+                                    <img src="{{asset('storage/' . $course->image)}}"  height="200px">
                                     <input type="file" name="image" placeholder=""
                                         class="form-control p-0 border-2">
                                 </div>
@@ -297,51 +282,12 @@
         $('select').selectize({
             sortField: 'text'
         });
-        $(document).on('click', '#add_section', function (e) {
-            var text =
-            '<div class="form-group mb-4" id="section">'
-            +'<div class="col-md-12 border-bottom p-2">'
-            + '<h1 class="col-md-12 p-0">Section</h1>'
-            +'<input type="text" name="section_names[]" placeholder="section name" >'
-                +'<div class="row lecture">'
-                    +'<div class="col-10">'
-                  +'  <h2 class="col-md-12 p-0">Lecture</h2>'
-                    +'<button type="button" class="add-lecture btn btn-success" >Add lecture</button>'
-                +'</div>'
-                +'<div class="col-2">'
-                   +' <button type="button" id="delete_section" class="btn btn-danger">Delete Section</button>'
-                +'</div>'
-               +' <label for="">Lecture Name</label> '
-              +'  <input type="text" name="lecture_names[]" placeholder="name"'
-              +'  class="form-control p-0 border-2">'
-            +'    <label for="">Lecture Description</label> '
-            +'    <textarea type="text" name="lecture_descriptions[]"class="form-control p-0 border-2"></textarea>'
-            +'    <label for="">Lecture Link</label>'
-            +'    <input type="text" name="lecture_links[]" placeholder="link" class="form-control p-0 border-2">'
-            +'    <label for="">Lecture File</label>'
-            +'    <input type="file" name="lecture_files[]" placeholder="" class="form-control p-0 border-2">'
-            +'    <label for="">Lecture Video</label>'
-            +'    <input type="file" name="lecture_videos[]" placeholder="" class="form-control p-0 border-2">'
-            +'<button type="button" id="add_section" class="btn btn-success" style="width: 1215px">Add Section</button>'
-                +'</div>'
-            +'</div>'
-            +'</div>'
-            $('#sections').append(text)
-        });
-        $("#create").click(function(){
-            var text =
-                '<div class="row">' +
-                '<div class ="col-8" >' +
-                '<textarea name="course_summaries[]"  placeholder="" class="form-control"  style="width: 800px"> ' +
-                '</textarea>' +
-                '</div>' +
-                '<div class ="col-1" >' +
-                '<button type="button" id="delete" class="summary-delete"><i class="fa fa-minus" id="summary-delete" aria-hidden="true" disable></i></button> ' +
-                '</div>' +
-                '</div>'
-            $('#summary').append(text)
-        });
-    });
+        // $(document).on('click', ,function() {
+
+        // });
+    })
+    </script>
+    <script>
     </script>
     <script>
         $(document).on('click', '#delete', function (e) {
@@ -352,11 +298,6 @@
         })
     </script>
     <script>
-        $(document).on('click', '#delete_section', function (e) {
-            e.target.parentElement.parentElement.parentElement.remove()
-        })
-        $(document).on('click', '#delete_lecture', function (e) {
-            e.target.parentElement.parentElement.remove()
-        })
+
     </script>
 @endpush

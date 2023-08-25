@@ -10,7 +10,10 @@ class AgeController extends Controller
 {
     public function index()
     {
-        $ages = Age::query()->select('id','name')->get();
+        $ages = Age::query()
+            ->select('id','name')
+            ->get();
+
         return view('admin.pages.ages.index',compact('ages'));
     }
 
@@ -24,12 +27,14 @@ class AgeController extends Controller
         Age::create([
             'name'=>$request->name,
         ]);
+
         return back()->with('success','Age created successfully');
     }
 
     public function show($id)
     {
         $age = Age::query()->findOrFail($id);
+
         return view('admin.pages.ages.show',compact('age'));
     }
 
