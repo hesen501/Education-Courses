@@ -34,19 +34,25 @@ class LanguageController extends Controller
 
     public function show($id)
     {
-        $language = Language::query()->findOrFail($id);
+        $language = Language::query()
+            ->select('id', 'name','slug')
+            ->findOrFail($id);
         return view('admin.pages.languages.show', compact('language'));
     }
 
     public function edit($id)
     {
-        $language = Language::query()->findOrFail($id);
+        $language = Language::query()
+            ->select('id', 'name','slug')
+            ->findOrFail($id);
         return view('admin.pages.languages.edit', compact('language'));
     }
 
     public function update(Request $request, $id)
     {
-        $language = Language::query()->findOrFail($id);
+        $language = Language::query()
+            ->select('id', 'name','slug')
+            ->findOrFail($id);
         $language->update([
             'name' => $request->name,
             'slug' => $request->slug,

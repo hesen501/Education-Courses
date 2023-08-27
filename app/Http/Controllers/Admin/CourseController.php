@@ -27,11 +27,12 @@ class CourseController extends Controller
 
     public function create()
     {
-        $languages = Language::query()->get();
-        $categories = Category::query()->get();
-        $currencies = Currency::query()->get();
-        $ages = Age::query()->get();
-        return view('admin.pages.courses.create',compact( 'categories' , 'languages' , 'currencies' , 'ages' ));
+        $languages = selectModel(Language::class,['id', 'name']);
+        $categories = selectModel(Category::class,['id', 'name']);
+        $currencies = selectModel(Currency::class,['id','name','symbol','code']);
+        $ages = selectModel(Age::class,['id', 'name']);
+        
+        return view('admin.pages.courses.create',compact('categories', 'languages', 'currencies', 'ages' ));
     }
 
     public function store(Request $request)
@@ -66,30 +67,46 @@ class CourseController extends Controller
         return to_route('admin.courses.edit', $course->id )->with('success' ,'Course created successfully' );
     }
 
-    public function show($id)
-    {
-        $course = Course::query()->findOrFail($id);
-        return view('admin.pages.courses.show', compact('course'));
-    }
+    // public function show($id)
+    // {
+    //     $course = Course::query()->findOrFail($id);
+    //     return view('admin.pages.courses.show', compact('course'));
+    // }
 
     public function edit($id)
     {
         $course = Course::query()
+            ->select(
+                "id", "name", "permalink", "description", "price", "requirements", "target_student",
+                "min_point", "quiz_status", "certificate_status", "time_limit_status",  "image", 
+                "background_image", "language_id", "currency_id"
+                )
             ->with('categories' ,'ages')
             ->findOrFail($id);
-        $languages = Language::query()->get();
-        $categories = Category::query()->get();
-        $currencies = Currency::query()->get();
-        $ages = Age::query()->get();
-        $category_ids = $course->categories->pluck('id')->toArray();
-        $age_ids = $course->ages->pluck('id')->toArray();
+
+        $languages = selectModel(Language::class,['id','name','slug']);
+        $categories = selectModel(Category::class,['id','name']);
+        $currencies = selectModel(Currency::class,['id','name','symbol','code']);
+        $ages = selectModel(Age::class,['id','name']);
+
+        $category_ids = $course->categories
+            ->pluck('id')
+            ->toArray();
+
+        $age_ids = $course->ages
+            ->pluck('id')
+            ->toArray();
+
         $course_summaries = CourseSummary::query()
+            ->select("id", "description", "course_id")
             ->where('course_id', $course->id)
             ->get();
+
         $sections = Section::query()
-            ->where('course_id', $course->id )
+            ->select('id', 'name', 'course_id')
+            ->where('course_id', $course->id)
             ->get();
-        
+
         if(!session()->has('step')){session()->put( 'step' , 1 );}
         return view('admin.pages.courses.edit',compact('course' ,'categories', 'languages',
         'currencies','ages', 'category_ids','age_ids' ,'course_summaries', 'sections'));
@@ -97,6 +114,10 @@ class CourseController extends Controller
 
     public function editStepOne(Request $request, $id){
         $course = Course::query()
+            ->select(
+                'id', 'name' ,'description',
+                'price', 'language_id', 'currency_id'
+            )
             ->findOrFail($id);
 
         $request->validate([
@@ -129,17 +150,14 @@ class CourseController extends Controller
 
     public function editStepTwo(Request $request, $id){
         $course = Course::query()
+            ->select("id", "requirements", "target_student" ,"permalink")
             ->findOrFail($id);
 
         CourseSummary::query()
             ->where('course_id', $course->id)
             ->delete();
 
-        $summaries = [];
-        foreach( $request->course_summaries as $summary ){
-            $summaries[] = ['course_id' => $course->id ,'description' => $summary ?? ' '];
-        }
-        CourseSummary::insert( $summaries );
+        $this->insertArray($request->course_summaries,$course->id,'description',CourseSummary::class);
         
         $request->validate([
             'requirements'   => 'required',
@@ -164,6 +182,10 @@ class CourseController extends Controller
 
     public function editStepFour(Request $request, $id){
         $course = Course::query()
+            ->select(
+                "id", "min_point", "quiz_status" ,
+                "certificate_status","time_limit_status"
+                )
             ->findOrFail($id);
 
         $request->validate([
@@ -182,13 +204,13 @@ class CourseController extends Controller
             'time_limit_status' =>$request->time_limit_status,
         ];
 
-        if( $request->hasFile('image') ){
+        if( $request->hasFile('image') ):
             $data['image'] = $request->file('image')->store('courses', 'public' );
-        }
+        endif;
 
-        if($request->hasFile('background_image')){
+        if($request->hasFile('background_image')):
             $data['background_image'] = $request->file('background_image')->store('courses', 'public' );
-        }
+        endif;
 
         $course->update($data);
 
@@ -199,9 +221,11 @@ class CourseController extends Controller
     private function insertArray(array $request_data, int $course_id, string $column, $model)
     {
         $datas = [];
+        
         foreach($request_data as $data){
-            $datas[] = ['course_id' => $course_id, $column => $data ];
+            $datas[] = ['course_id' => $course_id, $column => $data ?? ' ' ];
         }
+
         $model::insert($datas);
     }
 

@@ -159,11 +159,9 @@
                                         class="form-control p-0 border-2">
                                 </div>
                             </div>
-                            <div class="col-sm-12">
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-success" name="button" value="1">Back</button>
                                 <button type="submit" class="btn btn-success" name="button" value="3">Next Step</button>
-                            </div>
-                            <div class="col-sm-12">
-                                <button type="submit" class="btn btn-success step1" name="button" value="1">Back</button>
                             </div>
                         </form>
                         </div>
@@ -171,39 +169,71 @@
                         <form id="form3" action="{{route('admin.courses.editStepThree',$course->id)}}" method="POST" enctype="multipart/form-data" class="form-horizontal form-material" style="@if(session()->get('step')==3) display: block @else display: none @endif">
                             @csrf
                             @method('PATCH')
-                            <table class="table text-nowrap">
-                                <a href="{{route('admin.sections.create',$course->id)}}" class="btn btn-primary" >Add Section</a>
-                                <thead>
-                                    <tr>
-                                        <th class="border-top-0">Name</th>
-                                        <th class="border-top-0">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($sections as $section)
-                                    <tr>
-                                        <td>{{$section->name}}</td>
-                                        <td>
-                                            <a href="{{route('admin.sections.edit',$section->id)}}" class="btn btn-primary">
-                                                Edit
-                                            </a>
-                                            {{-- <a href="{{route('admin.sections.show',$section->id)}}" class="btn btn-warning" style="color: black">
-                                                Show
-                                            </a> --}}
-                                            <a href="{{ route('admin.sections.destroy', $section->id) }}" class="btn btn-danger confirmationDelete" >Delete</a>
-                                            <!-- Create a hidden form that will be submitted when the link is clicked -->
-                                           
-                                        </td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                            <br>
-                            <div class="col-sm-12">
-                                <button type="submit" class="btn btn-success " name="button" value="4">Next Step</button>
+                            <div class="row">
+                                <div class="col-6">
+                                    <table class="table text-nowrap">
+                                        <a href="{{route('admin.sections.create',$course->id)}}" class="btn btn-primary" >Add Section</a>
+                                        <thead>
+                                            <tr>
+                                                <th class="border-top-0">Name</th>
+                                                <th class="border-top-0">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($sections as $section)
+                                            <tr>
+                                                <td>{{$section->name}}</td>
+                                                <td>
+                                                    <a href="{{route('admin.sections.edit',$section->id)}}" class="btn btn-primary">
+                                                        Edit
+                                                    </a>
+                                                    {{-- <a href="{{route('admin.sections.show',$section->id)}}" class="btn btn-warning" style="color: black">
+                                                        Show
+                                                    </a> --}}
+                                                    <a href="{{ route('admin.sections.destroy', $section->id) }}" class="btn btn-danger confirmationDelete" >Delete</a>
+                                                    <!-- Create a hidden form that will be submitted when the link is clicked -->
+                                                   
+                                                </td>
+                                            </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="col-6">
+                                    <table class="table text-nowrap">
+                                        <a href="{{route('admin.sections.create',$course->id)}}" class="btn btn-primary" >Add Section</a>
+                                        <thead>
+                                            <tr>
+                                                <th class="border-top-0">Name</th>
+                                                <th class="border-top-0">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($sections as $section)
+                                            <tr>
+                                                <td>{{$section->name}}</td>
+                                                <td>
+                                                    <a href="{{route('admin.sections.edit',$section->id)}}" class="btn btn-primary">
+                                                        Edit
+                                                    </a>
+                                                    {{-- <a href="{{route('admin.sections.show',$section->id)}}" class="btn btn-warning" style="color: black">
+                                                        Show
+                                                    </a> --}}
+                                                    <a href="{{ route('admin.sections.destroy', $section->id) }}" class="btn btn-danger confirmationDelete" >Delete</a>
+                                                    <!-- Create a hidden form that will be submitted when the link is clicked -->
+                                                   
+                                                </td>
+                                            </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
-                            <div class="col-sm-12">
+                            
+                            <br>
+                            <div class="d-flex gap-2">
                                 <button type="submit" class="btn btn-success " name="button" value="2">Back</button>
+                                <button type="submit" class="btn btn-success " name="button" value="4">Next Step</button>
                             </div>
                         </form>
                         </div>
@@ -282,12 +312,20 @@
         $('select').selectize({
             sortField: 'text'
         });
-        // $(document).on('click', ,function() {
-
-        // });
-    })
-    </script>
-    <script>
+        $("#create").click(function(){
+            var text =
+                '<div class="row">' +
+                '<div class ="col-8" >' +
+                '<textarea name="course_summaries[]"  placeholder="" class="form-control"  style="width: 800px"> ' +
+                '</textarea>' +
+                '</div>' +
+                '<div class ="col-1" >' +
+                '<button type="button" id="delete" class="summary-delete"><i class="fa fa-minus" id="summary-delete" aria-hidden="true" disable></i></button> ' +
+                '</div>' +
+                '</div>'
+            $('#summary').append(text)
+        });
+    });
     </script>
     <script>
         $(document).on('click', '#delete', function (e) {
